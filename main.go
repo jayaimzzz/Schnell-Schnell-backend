@@ -24,12 +24,12 @@ func main() {
     router := gin.Default()
     router.POST("/login", postLogin)
 
-    router.Run("localhost:8080")
+    router.RunTLS("localhost:8080", "localhost.pem", "localhost-key.pem")
 }
 
 func postLogin(c *gin.Context) {
 	// TODO if this is the right thing to do, move to middleware and move url to env var.
-	c.Header("Access-Control-Allow-Origin", "http://localhost:4200")
+	c.Header("Access-Control-Allow-Origin", "https://localhost:4200")
     c.Header("Access-Control-Allow-Methods", "POST, OPTIONS")
 
 	var newUser user
