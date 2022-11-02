@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
     "net/http"
+	"strings"
 	"time"
 	
 	"golang.org/x/crypto/bcrypt"
@@ -42,6 +43,11 @@ func postLogin(c *gin.Context) {
 
 	if newUser.Username == "" || newUser.Password == "" || newUser.Token == "" {
 		c.JSON(http.StatusBadRequest, "Username, password, and token are required")
+		return
+	}
+
+	if !strings.Contains(newUser.Username, "@") {
+		c.JSON(http.StatusBadRequest, "Usernames must be an email address")
 		return
 	}
 
