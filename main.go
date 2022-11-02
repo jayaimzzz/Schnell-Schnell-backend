@@ -26,17 +26,17 @@ func main() {
     router.Run("localhost:8080")
 }
 
-// func HashPassword(password string) (string, error) {
-//     bytes, err := bcrypt.GenerateFromPassword([]byte(password), 1)
-//     return string(bytes), err
-// }
-
 func postLogin(c *gin.Context) {
+	// TODO if this is the right thing to do, move to middleware and move url to env var.
+	c.Header("Access-Control-Allow-Origin", "http://localhost:4200")
+    c.Header("Access-Control-Allow-Methods", "POST, OPTIONS")
+
 	var newUser user
 
 	err := c.BindJSON(&newUser)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
+		println(err.Error())
 		return
 	}
 
@@ -54,6 +54,14 @@ func postLogin(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, "Token is incorrect")
 		return
 	}
+
+	// TODO send an array of parameter errors so the frontend can map an error to an input field
+	// {"errors":
+	// 	[
+	// 		{"parameter":"username", "message":"Username not found"},
+	// 		{"parameter":"password", "message":"Password is incorrect"},
+	// 	]
+	// }
 
 	if !user_exists {
 		c.JSON(http.StatusUnauthorized, "Username not found")
